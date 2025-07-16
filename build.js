@@ -17,6 +17,8 @@ await fs.mkdir('dist')
 
 await fs.mkdir('dist/index')
 
+await fs.cp('node_modules/github-markdown-css', 'dist/github-markdown-css')
+
 const index = await fs.readdir('index')
 
 const links = index.map(value => `/index/${value.slice(0, -3)}.html`)

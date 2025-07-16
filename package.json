@@ -11,6 +11,7 @@
 		"serve": "serve dist"
 	},
 	"dependencies": {
+		"github-markdown-css": "^5.8.1",
 		"micromark-extension-directive": "^4.0.0"
 	}
 }
