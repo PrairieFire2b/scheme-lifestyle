@@ -16,7 +16,7 @@ export function template_html5(data, options = {}) {
     <title>${data.title}</title>
 </head>
 <body>
-<div>${options.top_bar == true ? top_bar() : (top_bar ? top_bar : '')}</div>
+<div>${options.top_bar == true ? top_bar() : (top_bar ?? '')}</div>
 <article class="markdown-body">
 ${data.body}
 </article>

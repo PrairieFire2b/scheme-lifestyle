@@ -19,6 +19,7 @@ div > nav {
     position: sticky;
     top: 0;
     z-index: 100;
+    border-bottom: 12px solid #0000;
 }
 
 .nav {
@@ -26,12 +27,14 @@ div > nav {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 2px solid #d1d9e0;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
     height: 100%;
+    padding: 0;
 }
 
 .nav-item {
@@ -48,5 +51,12 @@ div > nav {
     height: 100%;
     display: flex;
     align-items: center;
-    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: rgb(25, 66, 222)
+}
+
+.nav-link:focus {
+    color: rgb(2, 50, 222)
 }

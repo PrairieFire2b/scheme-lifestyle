@@ -47,7 +47,6 @@ let extensions = { extensions: [gfm(), directive(), frontmatter()], htmlExtensio
 for (let content of index) {
   let html = micromark(await fs.readFile(`index/${content}`), extensions)
   // TODO: proper metadata
-  let first_h1 = html.match(/\<h1\>([^<]*)\<\/h1\>/i)[0]
   let title = get_title(html) ?? content.slice(0, -3)
   metadata[index] = { title };
   await fs.writeFile(`dist/index/${content.slice(0, -3)}.html`, template_html5({ body: html, title }, { top_bar: true }))
