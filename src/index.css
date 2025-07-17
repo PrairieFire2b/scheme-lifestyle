@@ -1,0 +1,52 @@
+article.markdown-body {
+    margin: 0 auto;
+}
+
+.markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 980px;
+    padding: 0 45px;
+}
+
+@media (max-width: 767px) {
+    .markdown-body {
+        padding: 15px;
+    }
+}
+
+div > nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    height: 100%;
+}
+
+.nav-item {
+    height: 100%;
+    position: relative;
+}
+
+.nav-link {
+    color: royalblue;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}

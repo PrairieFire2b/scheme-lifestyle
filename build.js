@@ -7,7 +7,7 @@ import { micromark } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { directive, directiveHtml } from 'micromark-extension-directive'
 import { frontmatter, frontmatterHtml } from 'micromark-extension-frontmatter';
-import { template_h5 } from './tools/html.js';
+import { get_title, template_html5 } from './tools/html.js';
 
 const homepage = await fs.readFile('src/index.md')
 
@@ -21,7 +21,7 @@ await fs.cp('node_modules/github-markdown-css', 'dist/github-markdown-css')
 
 const index = await fs.readdir('index')
 
-const links = index.map(value => `/index/${value.slice(0, -3)}.html`)
+const links = index.filter(value => value.endsWith('.md')).map(value => `/index/${value.slice(0, -3)}.html`)
 
 let metadata = {}
 
@@ -42,20 +42,28 @@ function contents(d) {
   this.tag('</ul>')
 }
 
-let extensions = { extensions: [gfm(), directive(), frontmatter()], htmlExtensions: [gfmHtml(), directiveHtml({contents}), frontmatterHtml()]}
+let extensions = { extensions: [gfm(), directive(), frontmatter()], htmlExtensions: [gfmHtml(), directiveHtml({ contents }), frontmatterHtml()] }
 
 for (let content of index) {
-    let html = micromark(await fs.readFile(`index/${content}`), extensions)
-    // TODO: proper title (metadata)
-    let first_h1 = html.match(/\<h1\>([^<]*)\<\/h1\>/i)[0]
-    let title = first_h1 ? first_h1.slice(4, -5).trim() : content.slice(0, -3)
-    metadata[index] = { title };
-    await fs.writeFile(`dist/index/${content.slice(0, -3)}.html`, template_h5.replace('{body}', html).replace('{title}', title))
+  let html = micromark(await fs.readFile(`index/${content}`), extensions)
+  // TODO: proper metadata
+  let first_h1 = html.match(/\<h1\>([^<]*)\<\/h1\>/i)[0]
+  let title = get_title(html) ?? content.slice(0, -3)
+  metadata[index] = { title };
+  await fs.writeFile(`dist/index/${content.slice(0, -3)}.html`, template_html5({ body: html, title }, { top_bar: true }))
 }
 
 /**
  * NOTE: @see {contents}
  */
-await fs.writeFile('dist/index.html', template_h5.replace('{body}', micromark(homepage, extensions), {
-  'flag': 'w+'
-}).replace('{title}', 'Scheme Lifestyle'))
+await fs.writeFile('dist/index.html', template_html5({ body: micromark(homepage, extensions), title: 'Scheme Lifestyle' }, { top_bar: true }))
+
+for (let file of (await fs.readdir('src'))) {
+  if (file == 'index.md') continue;
+  if (file.endsWith('.css'))  await fs.copyFile(`src/${file}`, `dist/${file}`)
+  if (file.endsWith('.md')) {
+    let html = micromark(await fs.readFile(`src/${file}`), extensions)
+    let title = get_title(html) ?? file.slice(0, -3)
+    await fs.writeFile(`dist/${file.slice(0, -3)}.html`, template_html5({ body: html, title }, { top_bar: true }))
+  }
+}
