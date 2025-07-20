@@ -3,11 +3,13 @@
  * @import {CompileContext} from 'micromark-util-types'
  */
 import fs from 'node:fs/promises'
+import { exec } from 'node:child_process'
 import { micromark } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { directive, directiveHtml } from 'micromark-extension-directive'
 import { frontmatter, frontmatterHtml } from 'micromark-extension-frontmatter';
 import { get_title, template_html5 } from './tools/html.js';
+import { enable_hoot, hoot_eval } from './tools/directive.js';
 
 const homepage = await fs.readFile('src/index.md')
 
@@ -18,6 +20,17 @@ await fs.mkdir('dist')
 await fs.mkdir('dist/index')
 
 await fs.cp('node_modules/github-markdown-css', 'dist/github-markdown-css')
+
+await fs.mkdir('dist/scripts')
+
+let files = await fs.readdir('scripts')
+
+for await (let file of files) {
+  await fs.copyFile(`scripts/${file}`, `dist/scripts/${file}`)
+  if (file.endsWith('.ss') && !files.includes(`${file.slice(0, -3)}.wasm`)) {
+    exec(`guild compile-wasm scripts/${file} -g1 -o dist/scripts/${file.slice(0, -3)}.wasm`) // The childprocess has no error reporting...
+  }
+}
 
 const index = await fs.readdir('index')
 
@@ -31,7 +44,6 @@ let metadata = {}
  * @note Sequential execution: it must be evaluated after the for loop after
  */
 function contents(d) {
-
   this.tag('<ul')
   this.tag('>')
   for (const [i, link] of links.entries()) {
@@ -42,7 +54,7 @@ function contents(d) {
   this.tag('</ul>')
 }
 
-let extensions = { extensions: [gfm(), directive(), frontmatter()], htmlExtensions: [gfmHtml(), directiveHtml({ contents }), frontmatterHtml()] }
+let extensions = { extensions: [gfm(), directive(), frontmatter()], htmlExtensions: [gfmHtml(), directiveHtml({ contents, enable_hoot, hoot_eval }), frontmatterHtml()] }
 
 for (let content of index) {
   let html = micromark(await fs.readFile(`index/${content}`), extensions)
