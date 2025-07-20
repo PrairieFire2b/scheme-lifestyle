@@ -7,11 +7,16 @@
 	},
 	"scripts": {
 		"build": "node build.js",
-		"dev": "nodemon --watch src/* --watch tools/* --watch build.js --exec \"npm run build\"",
+		"dev": "nodemon --exec \"npm run build\"",
 		"serve": "serve dist"
 	},
 	"dependencies": {
 		"github-markdown-css": "^5.8.1",
 		"micromark-extension-directive": "^4.0.0"
+	},
+	"nodemonConfig": {
+		"ignore": [".git", "node_modules/**/node_modules"],
+		"watch": ["tools/", "src/", "scripts/"],
+		"ext": "js,md,ss"
 	}
 }

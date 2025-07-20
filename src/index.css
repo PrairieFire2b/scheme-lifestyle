@@ -60,3 +60,32 @@ div > nav {
 .nav-link:focus {
     color: rgb(2, 50, 222)
 }
+
+.hoot-eval {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.eval-scheme-code {
+    position: absolute;
+    right: 10px;
+}
+
+@media (max-width: 767px) {
+    .eval-scheme-code {
+        width: 12%;
+    }
+}
+
+button.eval-scheme-code {
+    border-color: #606e7b8d  #e8e9ea91 #e8e9ea9b #606e7b8c;
+    border-radius: 0%;
+    border-width: 1px;
+    background-color: var(--bgColor-muted);
+    letter-spacing: 1.2px;
+    outline: none;
+    text-align: center;
+}
